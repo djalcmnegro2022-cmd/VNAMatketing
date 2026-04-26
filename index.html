@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VNA MARTING IA</title>
+
+<style>
+body{
+  margin:0;
+  font-family:Arial;
+  color:white;
+
+  background:
+  linear-gradient(120deg, rgba(0,0,0,0.95), rgba(10,10,10,0.95)),
+  
+  repeating-linear-gradient(
+    120deg,
+    rgba(255,215,0,0.15) 0px,
+    rgba(255,215,0,0.15) 1px,
+    transparent 1px,
+    transparent 80px
+  ),
+  
+  repeating-linear-gradient(
+    60deg,
+    rgba(255,215,0,0.1) 0px,
+    rgba(255,215,0,0.1) 1px,
+    transparent 1px,
+    transparent 100px
+  ),
+
+  radial-gradient(circle at 30% 40%, rgba(255,215,0,0.25), transparent 40%),
+  radial-gradient(circle at 70% 60%, rgba(255,215,0,0.15), transparent 40%);
+
+  background-color:black;
+  background-blend-mode: screen;
+}
+
+header{
+  text-align:center;
+  padding:15px;
+  color:gold;
+  font-weight:bold;
+}
+
+.container{padding:15px;}
+
+input,select,button{
+  width:100%;
+  padding:12px;
+  margin-bottom:10px;
+  border-radius:10px;
+  border:none;
+}
+
+button{
+  background:gold;
+  color:black;
+  font-weight:bold;
+}
+
+.card{
+  background:#111;
+  padding:12px;
+  border-radius:10px;
+  margin-top:10px;
+}
+
+.player{
+  margin-bottom:15px;
+}
+</style>
+</head>
+
+<body>
+
+<header>🎧 VNA MARTING IA 🇦🇴</header>
+
+<div class="container">
+
+<!-- 🎧 PLAYER SPOTIFY -->
+<div class="player">
+<iframe style="border-radius:12px"
+src="https://open.spotify.com/embed/playlist/6Mqc3GkIaQ02lxZxKJvZtz"
+width="100%" height="152"
+frameBorder="0"
+allow="autoplay; encrypted-media">
+</iframe>
+</div>
+
+<input id="beatName" placeholder="Nome do Beat">
+
+<select id="style">
+<option>Trap</option>
+<option>Kuduro</option>
+<option>Amapiano</option>
+<option>Afrobeat</option>
+</select>
+
+<button onclick="generate()">🚀 Gerar Conteúdo IA</button>
+
+<div id="output"></div>
+
+</div>
+
+<script>
+
+/* IA SIMULADA */
+const openings=["Não devias ouvir isto","Isso não é normal","Isso mexe contigo","Não ignora isso"];
+const actions=["ouve até ao fim","sente isso","fecha os olhos","entra na vibe"];
+const emotions=["quando estás sozinho","quando ninguém acredita","quando queres vencer"];
+const endings=["porque isso muda tudo","porque isso é diferente","porque isso bate forte"];
+
+const hashtagsBase=["#angola","#viral","#beats","#music","#producer","#tiktok"];
+const styleTags={
+Trap:["#trap","#drill","#street"],
+Kuduro:["#kuduro","#dance"],
+Amapiano:["#amapiano","#vibes"],
+Afrobeat:["#afrobeats","#afro"]
+};
+
+let data=[],index=0,batch=20;
+
+function rand(a){return a[Math.floor(Math.random()*a.length)];}
+
+function generate(){
+  let beat=document.getElementById("beatName").value;
+  let style=document.getElementById("style").value;
+
+  data=[];
+
+  for(let i=0;i<200;i++){
+
+    let hook=`${rand(openings)} — ${rand(actions)} ${rand(endings)}`;
+
+    let titulo = beat 
+      ? `${beat} — ${style} — ${rand(openings)}`
+      : `${style} — ${rand(openings)}`;
+
+    let desc = `Esse som é para ${rand(emotions)}. ${hook}. ${rand(actions)}.`;
+
+    let hashtags = [
+      ...styleTags[style],
+      ...hashtagsBase.sort(()=>0.5-Math.random()).slice(0,4)
+    ].join(" ");
+
+    data.push({titulo,hook,desc,hashtags});
+  }
+
+  index=0;
+  document.getElementById("output").innerHTML="";
+  load();
+}
+
+function load(){
+  let out=document.getElementById("output");
+  let frag=document.createDocumentFragment();
+
+  for(let i=0;i<batch;i++){
+    if(index>=data.length) return;
+
+    let item=data[index];
+
+    let div=document.createElement("div");
+    div.className="card";
+    div.innerHTML=`
+    <b>🎯 ${item.titulo}</b><br><br>
+    🔥 ${item.hook}<br>
+    📝 ${item.desc}<br>
+    🏷️ ${item.hashtags}<br><br>
+    <button onclick="copy('${item.titulo} ${item.desc} ${item.hashtags}')">📋 Copiar</button>
+    `;
+
+    frag.appendChild(div);
+    index++;
+  }
+
+  out.appendChild(frag);
+}
+
+window.addEventListener("scroll",()=>{
+  if(window.innerHeight+window.scrollY>=document.body.offsetHeight-100){
+    load();
+  }
+});
+
+function copy(t){
+  navigator.clipboard.writeText(t);
+  alert("Copiado!");
+}
+
+</script>
+
+</body>
+</html>
